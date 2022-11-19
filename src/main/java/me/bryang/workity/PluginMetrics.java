@@ -23,8 +23,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
-public class PluginMetrics {
-
+public final class PluginMetrics {
     private final Plugin plugin;
 
     private final MetricsBase metricsBase;
