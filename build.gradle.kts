@@ -13,7 +13,6 @@ repositories {
 	maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 	maven("https://jitpack.io/")
 	maven("https://oss.sonatype.org/content/groups/public/")
-	maven("https://repo.unnamed.team/repository/unnamed-public/")
 	mavenCentral()
 }
 
@@ -24,8 +23,6 @@ dependencies {
 	
 	implementation("net.objecthunter:exp4j:0.4.8")
 	implementation("commons-lang:commons-lang:2.6")
-	implementation("me.fixeddev:commandflow-universal:0.5.3")
-	implementation("me.fixeddev:commandflow-universal:0.5.2")
 	implementation("com.github.InitSync:XConfig:1.0.5")
 }
 
@@ -37,7 +34,6 @@ tasks {
 		
 		relocate("org.apache.commons", "$libraries.commons")
 		relocate("net.objecthunter.exp4j", "$libraries.exp4j")
-		relocate("me.fixeddev.commandflow", "$libraries.commandflow")
 		relocate("net.xconfig", "$libraries.xconfig")
 	}
 	
