@@ -37,7 +37,7 @@ implements Core {
 		this.activitiesManager = ManagerService.activitiesManager();
 		this.fileConverter = ManagerService.fileConverter(configurationManager, configurationHandler);
 		this.vaultHookManager = ManagerService.vaultHookManager(plugin, Bukkit.getLogger());
-		this.workActionManager = ManagerService.workActionManager(this);
+		this.workActionManager = ManagerService.workActionManager();
 	}
 	
 	@Override
