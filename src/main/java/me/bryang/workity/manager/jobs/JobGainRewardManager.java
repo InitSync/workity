@@ -10,7 +10,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.xconfig.bukkit.config.BukkitConfigurationHandler;
 import org.bukkit.entity.Player;
-import sun.misc.FloatingDecimal;
 
 import java.util.Objects;
 
@@ -58,8 +57,8 @@ implements JobManager {
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
 			new TextComponent(
 				configurationHandler.text("config.yml", "config.action-bar.gain-rewards")
-					.replace("%money%", FloatingDecimal.toJavaFormatString(moneyReward))
-					.replace("%xp%", FloatingDecimal.toJavaFormatString(xpReward))));
+					.replace("%money%", Double.toString(moneyReward))
+					.replace("%xp%", Double.toString(xpReward))));
 		
 		database.insertJobData(player.getUniqueId(),
 			jobName,
