@@ -2,24 +2,18 @@
 # Config
 
 config:
-
   # Database [NONE, MySQL]
   database:
-
     type: NONE
-
     hostname: hostname
     port: 25565
     database: database
-
     username: username
     password: password
 
   # Limit of jobs each player.
   limit-jobs:
-
     groups:
-
       # Default limit.
       default: 3
 
@@ -39,7 +33,6 @@ config:
   max-level-jobs: 200
 
   multiplier:
-
     # To broadcast the multiplier. Put 'none' to disable this option.
     broadcast: none
 
@@ -52,7 +45,6 @@ config:
   #     vip+: 3.0
 
   formula:
-
     # Formula for gain money per level:
     gain-money: "%money% * %level%"
 
@@ -63,15 +55,12 @@ config:
     max-xp: "(%level% * %level%) * 10"
 
   action-bar:
-
     # Format to gain rewards:
     gain-rewards: "&a+%money%$ &8- &f+%xp%XP"
 
   # Reward when you increase a level:
   rewards:
-
     config:
-
       # To enable the option.
       enabled: false
 
@@ -82,4 +71,3 @@ config:
         - "[ADD-MONEY] 500"
         - "[BROADCAST] &aThe player &a%player% won the level 10"
         - "[COMMAND] give %player% diamond "
-
