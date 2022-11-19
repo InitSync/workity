@@ -1,9 +1,13 @@
 package me.bryang.workity;
 
+import me.bryang.workity.utils.LogUtils;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Workity
 extends JavaPlugin {
+	private final PluginDescriptionFile descriptionFile = getDescription();
+	
 	private static Workity instance;
 	
 	private PluginCore core;
@@ -24,9 +28,9 @@ extends JavaPlugin {
 	public void onEnable() {
 		core.enable();
 		
-		getLogger().info(" Created by " + getDescription().getAuthors().get(0));
-		getLogger().info(" You are using the version " + getDescription().getVersion() + ".");
-		getLogger().info("Click to support: http://discord.devblook.team/");
+		LogUtils.info(" Created by " + descriptionFile.getAuthors().get(0));
+		LogUtils.info(" You are using the version " + descriptionFile.getVersion() + ".");
+		LogUtils.info("Click to support: http://discord.devblook.team/");
 		
 	}
 	
