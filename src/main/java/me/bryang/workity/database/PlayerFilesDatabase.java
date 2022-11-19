@@ -1,87 +1,102 @@
 package me.bryang.workity.database;
 
-import me.bryang.workity.Workity;
-import me.bryang.workity.manager.file.FileManager;
-
+import net.xconfig.bukkit.config.BukkitConfigurationHandler;
+import net.xconfig.enums.Action;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
-public class PlayerFilesDatabase implements Database{
-
-    private final FileManager fileManager;
-
-    public PlayerFilesDatabase(Workity workity){
-        fileManager = new FileManager(workity, "players");
-    }
-
-    @Override
-    public Database insertJobData(UUID playerUniqueId, String jobName, String playerData, String newData) {
-        fileManager.set("players." + playerUniqueId + ".jobs. " + jobName + "." + playerData, newData);
-        return this;
-    }
-
-    @Override
-    public Database insertJobData(UUID playerUniqueId, String jobName, String playerData, int newData) {
-        fileManager.set("players." + playerUniqueId + ".jobs. " + jobName + "." + playerData, newData);
-        return this;
-    }
-
-    @Override
-    public Database insertJobData(UUID playerUniqueId, String jobName, String playerData, double newData) {
-        fileManager.set("players." + playerUniqueId + ".jobs. " + jobName + "." + playerData, newData);
-        return this;
-    }
-
-    @Override
-    public void insertData(UUID playerUniqueId, String playerData, int newData) {
-        fileManager.set("players." + playerUniqueId + ".jobs. " + playerData, newData);
-    }
-
-
-    @Override
-    public String getJobStringData(UUID playerUniqueId, String jobName, String playerData) {
-        return fileManager.getString("players." + playerUniqueId + ".jobs." + jobName + "." + playerData);
-    }
-
-    @Override
-    public int getJobIntData(UUID playerUniqueId, String jobName, String playerData) {
-        return fileManager.getInt("players." + playerUniqueId + ".jobs." + jobName + "." + playerData, -1);
-    }
-
-    @Override
-    public double getJobDoubleData(UUID playerUniqueId, String jobName, String playerData) {
-        return fileManager.getDouble("players." + playerUniqueId + ".jobs." + jobName + "." + playerData, -1);
-    }
-
-    @Override
-    public String getStringData(UUID playerUniqueId, String playerData) {
-        return fileManager.getString("players." + playerUniqueId + "." + playerData);
-    }
-
-    @Override
-    public int getIntData(UUID playerUniqueId, String playerData) {
-        return fileManager.getInt("players." + playerUniqueId + "." + playerData, -1);
-    }
-
-    @Override
-    public double getDoubleData(UUID playerUniqueId, String playerData) {
-        return fileManager.getDouble("players." + playerUniqueId + "." + playerData, -1);
-    }
-
-    @Override
-    public List<String> getPlayerList() {
-        return new ArrayList<>(fileManager.getConfigurationSection("players").getKeys(false));
-    }
-
-    @Override
-    public List<String> getPlayerJobs(UUID playerUniqueID) {
-        return new ArrayList<>(fileManager.getConfigurationSection("players." + playerUniqueID + ".jobs").getKeys(false));
-    }
-
-    @Override
-    public void save() {
-        fileManager.save();
-    }
+public class PlayerFilesDatabase
+implements Database {
+	private final BukkitConfigurationHandler configurationHandler;
+	
+	public PlayerFilesDatabase(BukkitConfigurationHandler configurationHandler){
+		this.configurationHandler = Objects.requireNonNull(configurationHandler, "The BukkitConfigurationHandler is null.");
+	}
+	
+	@Override
+	public Database insertJobData(UUID playerId, String jobName, String playerData, String newData) {
+		configurationHandler.doSomething("players.yml",
+			Action.WRITE,
+			"players." + playerId + ".jobs. " + jobName + "." + playerData,
+			newData);
+		return this;
+	}
+	
+	@Override
+	public Database insertJobData(UUID playerId, String jobName, String playerData, int newData) {
+		configurationHandler.doSomething("players.yml",
+			Action.WRITE,
+			"players." + playerId + ".jobs. " + jobName + "." + playerData,
+			newData);
+		return this;
+	}
+	
+	@Override
+	public void insertData(UUID playerId, String playerData, int newData) {
+		configurationHandler.doSomething("players.yml",
+			Action.WRITE,
+			"players." + playerId + ".jobs. " + playerData,
+			newData);
+	}
+	
+	@Override
+	public String jobData(UUID playerId, String jobName, String playerData) {
+		return configurationHandler.text("players.yml",
+			"players." +
+			playerId +
+			".jobs." +
+			jobName +
+			"." +
+			playerData);
+	}
+	
+	@Override
+	public int jobIntData(UUID playerId, String jobName, String playerData) {
+		return configurationHandler.number("players.yml",
+			"players." +
+			playerId +
+			".jobs." +
+			jobName +
+			"." +
+			playerData);
+	}
+	
+	@Override
+	public String data(UUID playerId, String playerData) {
+		return configurationHandler.text("players.yml",
+			"players." +
+			playerId +
+			"." +
+			playerData);
+	}
+	
+	@Override
+	public int intData(UUID playerId, String playerData) {
+		return configurationHandler.number("players.yml",
+			"players." +
+			playerId +
+			"." +
+			playerData);
+	}
+	
+	@Override
+	public List<String> playersList() {
+		return new ArrayList<>(configurationHandler.configSection("players.yml", "players").getKeys(false));
+	}
+	
+	@Override
+	public List<String> playerJobs(UUID playerId) {
+		return new ArrayList<>(configurationHandler.configSection("players.yml", "players." + playerId + ".jobs").getKeys(false));
+	}
+	
+	@Override
+	public void save() {
+		configurationHandler.doSomething("players.yml",
+			Action.SAVE,
+			null,
+			null);
+	}
 }
