@@ -1,23 +1,19 @@
 package me.bryang.workity.utils;
 
-import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class MathLevelsUtils {
-
-    public static double calculateDoubleNumber(String format, int level) {
-
-        String mathFormat = format.replace("%level%", String.valueOf(level));
-
-        Expression expression = new ExpressionBuilder(mathFormat).build();
-        return expression.evaluate();
-    }
-
-    public static int calculateNumber(String format, int level) {
-
-        String mathFormat = format.replace("%level%", String.valueOf(level));
-
-        Expression expression = new ExpressionBuilder(mathFormat).build();
-        return (int) expression.evaluate();
-    }
+	private MathLevelsUtils() {}
+	
+	public static double calculateDoubleNumber(String format, int level) {
+		return new ExpressionBuilder(format.replace("%level%", Integer.toString(level)))
+			.build()
+			.evaluate();
+	}
+	
+	public static int calculateNumber(String format, int level) {
+		return (int) new ExpressionBuilder(format.replace("%level%", Integer.toString(level)))
+			.build()
+			.evaluate();
+	}
 }
