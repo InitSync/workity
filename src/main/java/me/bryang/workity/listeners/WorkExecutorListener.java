@@ -1,62 +1,68 @@
 package me.bryang.workity.listeners;
 
-import me.bryang.workity.PluginCore;
 import me.bryang.workity.action.JobAction;
 import me.bryang.workity.data.PlayerJobData;
+import me.bryang.workity.data.jobs.JobData;
 import me.bryang.workity.events.JobExecuteEvent;
 import me.bryang.workity.loader.DataLoader;
 import me.bryang.workity.manager.WorkActionManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+
 public class WorkExecutorListener implements Listener {
-
-
-    private final DataLoader dataLoader;
-    private final WorkActionManager workActionManager;
-
-    public WorkExecutorListener(PluginCore pluginCore) {
-
-        this.workActionManager = pluginCore.getManagerLoader().getWorkActionManager();
-
-        this.dataLoader = pluginCore.getDataLoader();
-    }
-
-    @EventHandler
-    public void onWork(JobExecuteEvent event) {
-        for (String jobName : dataLoader.getJobDataMap().keySet()) {
-
-            JobAction jobAction = event.getAction();
-
-            if (!dataLoader.getJobDataMap().get(jobName).isActivityType(jobAction.getType())) {
-                continue;
-            }
-
-            String dataRequired;
-
-            if (jobAction.getEntity() != null) {
-                dataRequired = jobAction.getEntity().getType().name().toUpperCase();
-            } else {
-                dataRequired = jobAction.getItemStack().getType().name().toUpperCase();
-            }
-
-            if (dataLoader.getJobDataMap().get(jobName).getBlockJobDataMap().get(dataRequired) == null) {
-                continue;
-            }
-
-            PlayerJobData playerJobData = dataLoader.getPlayerJob(event.getTarget()).getJob(jobName);
-
-            if (playerJobData == null) {
-                return;
-            }
-
-            workActionManager.doActions(
-                    Bukkit.getPlayer(event.getTarget()), playerJobData.getName(), dataRequired, playerJobData);
-
-        }
-    }
-
+	private final DataLoader dataLoader;
+	private final WorkActionManager workActionManager;
+	
+	public WorkExecutorListener(DataLoader dataLoader, WorkActionManager workActionManager) {
+		this.workActionManager = Objects.requireNonNull(workActionManager, "The WorkActionManager instance is null.");
+		this.dataLoader = Objects.requireNonNull(dataLoader, "The DataLoader object is null.");
+	}
+	
+	@EventHandler
+	public void onWork(JobExecuteEvent event) {
+		for (String jobName : dataLoader.jobData().keySet()) {
+			JobAction action = event.jobAction();
+			
+			Map<String, JobData> jobData = dataLoader.jobData();
+			if (!jobData.get(jobName).isActivityType(action.type())) continue;
+			
+			String dataRequired;
+			
+			Entity entity = action.entity();
+			if (entity != null) {
+				dataRequired = entity.getType()
+					.name()
+					.toUpperCase();
+			} else {
+				dataRequired = action.item()
+					.getType()
+					.name()
+					.toUpperCase();
+			}
+			
+			if (jobData.get(jobName)
+				.blockJobData()
+				.get(dataRequired) == null
+			) {
+				continue;
+			}
+			
+			UUID targetId = event.targetId();
+			PlayerJobData playerJobData = dataLoader.playerJob(targetId).job(jobName);
+			if (playerJobData == null) return;
+			
+			workActionManager.doActions(Bukkit.getPlayer(targetId),
+				playerJobData.getName(),
+				dataRequired,
+				playerJobData);
+		}
+	}
 }
 
 

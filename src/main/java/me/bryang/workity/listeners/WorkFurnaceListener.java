@@ -1,52 +1,52 @@
 package me.bryang.workity.listeners;
 
-import me.bryang.workity.PluginCore;
 import me.bryang.workity.Workity;
 import me.bryang.workity.database.Database;
 import me.bryang.workity.loader.DataLoader;
-import me.bryang.workity.manager.file.FileManager;
+import net.xconfig.bukkit.config.BukkitConfigurationHandler;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.Objects;
+
 public class WorkFurnaceListener implements Listener {
-
-    private final Workity workity;
-    private final FileManager configFile;
-    private final Database database;
-
-    private final DataLoader dataLoader;
-
-    public WorkFurnaceListener(PluginCore pluginCore) {
-        this.workity = pluginCore.getPlugin();
-
-        this.configFile = pluginCore.getFilesLoader().getConfigFile();
-        this.database = pluginCore.getDatabaseLoader().getDatabase();
-
-        this.dataLoader = pluginCore.getDataLoader();
-    }
-
-    @EventHandler
-    private void onFurnaceJob(FurnaceExtractEvent event) {
-        if (event.getBlock().getType() != Material.STONE) return;
-
-        for (String keys : configFile.getConfigurationSection("jobs").getKeys(false)) {
-            if (!configFile.getString("config." + keys + ".type")
-                    .equalsIgnoreCase("PLAYER_BREAK_BLOCK")) {
-                continue;
-            }
-
-            if (!database.getPlayerJobs(event.getPlayer().getUniqueId()).contains(keys)) {
-                continue;
-            }
-
-            if (!dataLoader.getJob(keys).getBlockJobDataMap().containsKey("STONE")) {
-                continue;
-            }
-
-            event.getBlock().setMetadata("workity::furnace", new FixedMetadataValue(workity, true));
-        }
-    }
+	private final BukkitConfigurationHandler configurationHandler;
+	private final Database database;
+	
+	private final DataLoader dataLoader;
+	
+	public WorkFurnaceListener(
+		BukkitConfigurationHandler configurationHandler,
+		Database database,
+		DataLoader dataLoader
+	) {
+		this.configurationHandler = Objects.requireNonNull(configurationHandler, "The BukkitConfigurationHandler is null.");
+		this.database = Objects.requireNonNull(database, "The Database object is null.");
+		this.dataLoader = Objects.requireNonNull(dataLoader, "The DataLoader instance is null.");
+	}
+	
+	@EventHandler
+	private void onFurnaceJob(FurnaceExtractEvent event) {
+		Block block = event.getBlock();
+		if (block.getType() != Material.STONE) return;
+		
+		for (String key : configurationHandler.configSection("config.yml", "jobs").getKeys(false)) {
+			if (!configurationHandler.text("config.yml", "config." + key + ".type").equals("PLAYER_BREAK_BLOCK")) continue;
+			
+			if (!database.playerJobs(event.getPlayer().getUniqueId()).contains(key)) continue;
+			
+			if (!dataLoader.job(key)
+				.blockJobData()
+				.containsKey("STONE")
+			) {
+				continue;
+			}
+			
+			event.getBlock().setMetadata("workity::furnace", new FixedMetadataValue(Workity.instance(), true));
+		}
+	}
 }
