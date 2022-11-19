@@ -1,52 +1,57 @@
 package me.bryang.workity.manager.jobs;
 
-import me.bryang.workity.PluginCore;
 import me.bryang.workity.data.PlayerJobData;
 import me.bryang.workity.database.Database;
-import me.bryang.workity.manager.file.FileManager;
 import me.bryang.workity.utils.MathLevelsUtils;
+import net.xconfig.bukkit.config.BukkitConfigurationHandler;
 import org.bukkit.entity.Player;
 
-public class JobIncreaseLevelManager implements JobManager {
+import java.util.Objects;
+import java.util.UUID;
 
-    private final FileManager configFile;
-    private final FileManager messagesFile;
-    private final Database database;
-
-
-
-    public JobIncreaseLevelManager(PluginCore pluginCore) {
-        this.configFile = pluginCore.getFilesLoader().getConfigFile();
-        this.messagesFile = pluginCore.getFilesLoader().getMessagesFile();
-
-        this.database = pluginCore.getDatabaseLoader().getDatabase();
-    }
-
-    @Override
-    public void doWorkAction(Player player, String jobName, String itemName, PlayerJobData playerJobData) {
-
-        if (playerJobData.getMaxXP() >= playerJobData.getXpPoints()) {
-            return;
-        }
-
-        if (playerJobData.getLevel() == configFile.getInt("config.max-level-jobs")) {
-
-            playerJobData.setXPPoints(playerJobData.getMaxXP());
-            player.sendMessage(messagesFile.getString("error.max-level"));
-            return;
-        }
-
-        playerJobData.setLevel(playerJobData.getLevel() + 1);
-        playerJobData.setXPPoints(0);
-        playerJobData.setMaxXP(
-                MathLevelsUtils.calculateNumber(configFile.getString("config.formula.max-xp"), playerJobData.getLevel()));
-
-        database
-                .insertJobData(player.getUniqueId(), jobName, "level", playerJobData.getLevel() + 1)
-                .insertJobData(player.getUniqueId(), jobName, "xp", 0)
-                .save();
-
-        player.sendMessage(messagesFile.getString("jobs.gain.level")
-                .replace("%new_level%", String.valueOf(playerJobData.getLevel())));
-    }
+public class JobIncreaseLevelManager
+implements JobManager {
+	private final BukkitConfigurationHandler configurationHandler;
+	private final Database database;
+	
+	public JobIncreaseLevelManager(BukkitConfigurationHandler configurationHandler, Database database) {
+		this.configurationHandler = Objects.requireNonNull(configurationHandler, "The BukkitConfigurationHandler is empty.");
+		this.database = Objects.requireNonNull(database, "The Database object is null.");
+	}
+	
+	@Override
+	public void doWorkAction(
+		Player player,
+		String jobName,
+		String itemName,
+		PlayerJobData playerJobData
+	) {
+		int maxExperience = playerJobData.getMaxExp();
+		if (maxExperience >= playerJobData.getExpPoints()) return;
+		
+		int level = playerJobData.getLevel();
+		if (level == configurationHandler.number("config.yml", "config.max-level-jobs")) {
+			playerJobData.setExpPoints(maxExperience);
+			player.sendMessage(configurationHandler.text("messages.yml", "error.max-level"));
+			return;
+		}
+		
+		playerJobData.setLevel(level + 1);
+		playerJobData.setExpPoints(0);
+		playerJobData.setMaxExp(MathLevelsUtils.calculateNumber(configurationHandler.text("config.yml", "config.formula.max-xp"), level));
+		
+		UUID playerId = player.getUniqueId();
+		database.insertJobData(playerId,
+				jobName,
+				"level",
+				playerJobData.getLevel() + 1)
+			.insertJobData(playerId,
+				jobName,
+				"xp",
+				0)
+			.save();
+		
+		player.sendMessage(configurationHandler.text("messages.yml", "jobs.gain.level")
+			.replace("%new_level%", Integer.toString(level)));
+	}
 }

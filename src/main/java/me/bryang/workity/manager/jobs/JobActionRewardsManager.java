@@ -1,53 +1,51 @@
 package me.bryang.workity.manager.jobs;
 
-import me.bryang.workity.PluginCore;
 import me.bryang.workity.data.PlayerJobData;
 import me.bryang.workity.manager.VaultHookManager;
-import me.bryang.workity.manager.file.FileManager;
+import net.xconfig.bukkit.config.BukkitConfigurationHandler;
+import net.xconfig.bukkit.utils.TextUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class JobActionRewardsManager implements JobManager {
+import java.util.Objects;
 
-    private final FileManager configFile;
-    private final VaultHookManager vaultHookManager;
-
-
-    public JobActionRewardsManager(PluginCore pluginCore) {
-        this.configFile = pluginCore.getFilesLoader().getConfigFile();
-        this.vaultHookManager = pluginCore.getManagerLoader().getVaultHookManager();
-    }
-
-    @Override
-    public void doWorkAction(Player player, String jobName, String itemName, PlayerJobData playerJobData) {
-
-
-        if (!configFile.getBoolean("config.rewards.enabled")) {
-            return;
-        }
-
-        int level = playerJobData.getLevel();
-
-        if (!configFile.isConfigurationSection("config.rewards." + level)) {
-            return;
-        }
-
-        for (String format : configFile.getStringList("config.rewards." + level + ".format")) {
-
-            if (format.startsWith("[BROADCAST]")) {
-                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', format.substring(11))
-                        .replace("%player%", player.getName()));
-            }
-
-            if (format.startsWith("[COMMAND]")) {
-                player.performCommand(format.substring(9)
-                        .replace("%player%", player.getName()));
-            }
-
-            if (format.startsWith("[MONEY]")) {
-                vaultHookManager.getEconomy().depositPlayer(player, Double.parseDouble(format.substring(7)));
-            }
-        }
-    }
+public class JobActionRewardsManager
+implements JobManager {
+	private final BukkitConfigurationHandler configurationHandler;
+	private final VaultHookManager vaultHookManager;
+	
+	public JobActionRewardsManager(BukkitConfigurationHandler configurationHandler, VaultHookManager vaultHookManager) {
+		this.configurationHandler = Objects.requireNonNull(configurationHandler, "The BukkitConfigurationHandler object is null.");
+		this.vaultHookManager = Objects.requireNonNull(vaultHookManager, "The VaultHookManager object is null.");
+	}
+	
+	@Override
+	public void doWorkAction(
+		Player player,
+		String jobName,
+		String itemName,
+		PlayerJobData playerJobData
+	) {
+		if (!configurationHandler.condition("config.yml", "config.rewards.enabled")) return;
+		
+		int level = playerJobData.getLevel();
+		
+		if (configurationHandler.configSection("config.yml", "config.rewards." + level) != null) return;
+		
+		configurationHandler.textList("config.yml", "config.rewards." + level + ".format")
+			.forEach(format -> {
+				if (format.startsWith("[BROADCAST]")) {
+					Bukkit.broadcastMessage(TextUtils.colorize(format.substring(11)
+						.replace("%player%", player.getName())));
+				}
+				
+				if (format.startsWith("[COMMAND]")) {
+					player.performCommand(format.substring(9).replace("%player%", player.getName()));
+				}
+				
+				if (format.startsWith("[MONEY]")) {
+					vaultHookManager.getEconomy().depositPlayer(player, Double.parseDouble(format.substring(7)));
+				}
+			});
+	}
 }
