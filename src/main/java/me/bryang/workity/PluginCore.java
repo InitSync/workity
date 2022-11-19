@@ -36,7 +36,7 @@ implements Core {
 		this.database = DatabaseService.playerFilesDatabase(configurationHandler);
 		this.activitiesManager = ManagerService.activitiesManager();
 		this.fileConverter = ManagerService.fileConverter(configurationManager, configurationHandler);
-		this.vaultHookManager = ManagerService.vaultHookManager(plugin, Bukkit.getLogger());
+		this.vaultHookManager = ManagerService.vaultHookManager(plugin);
 		this.workActionManager = ManagerService.workActionManager();
 	}
 	
