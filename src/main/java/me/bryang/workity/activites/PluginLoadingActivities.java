@@ -5,7 +5,6 @@ import me.bryang.workity.database.Database;
 import me.bryang.workity.loader.DataLoader;
 import me.bryang.workity.utils.MathLevelsUtils;
 import net.xconfig.bukkit.config.BukkitConfigurationHandler;
-import org.bukkit.Bukkit;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,10 +27,7 @@ public class PluginLoadingActivities implements Activities {
 	
 	public void loadTask() {
 		List<String> playersList = database.playersList();
-		if (playersList == null) {
-			Bukkit.getLogger().info("Thanks for using my plugin, don't forget check config.yml");
-			return;
-		}
+		if (playersList == null) return;
 		
 		playersList.forEach(player -> {
 			UUID playerId = UUID.fromString(player);
