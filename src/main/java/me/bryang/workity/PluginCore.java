@@ -16,7 +16,6 @@ import me.bryang.workity.services.ManagerService;
 import net.xconfig.bukkit.config.BukkitConfigurationHandler;
 import net.xconfig.bukkit.config.BukkitConfigurationModel;
 import net.xconfig.services.ConfigurationService;
-import org.bukkit.Bukkit;
 
 public class PluginCore
 implements Core {
