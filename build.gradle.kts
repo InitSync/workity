@@ -23,7 +23,7 @@ dependencies {
 	
 	implementation("net.objecthunter:exp4j:0.4.8")
 	implementation("commons-lang:commons-lang:2.6")
-	implementation("com.github.InitSync:XConfig:1.0.5")
+	implementation("com.github.InitSync:XConfig:1.0.6")
 }
 
 tasks {
