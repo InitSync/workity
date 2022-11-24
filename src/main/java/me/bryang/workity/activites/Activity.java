@@ -1,5 +1,5 @@
 package me.bryang.workity.activites;
 
-public interface Activities {
+public interface Activity {
 	void loadTask();
 }
