@@ -9,7 +9,6 @@ public class BlockJobData {
 		this.gainMoney = gainMoney;
 		this.gainXP = gainXP;
 		this.enableStatus = enableStatus;
-		
 	}
 	
 	public int getGainXP() {
