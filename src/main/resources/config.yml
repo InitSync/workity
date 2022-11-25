@@ -2,14 +2,7 @@
 # Config
 
 config:
-  # Database [NONE, MySQL]
-  database:
-    type: NONE
-    hostname: hostname
-    port: 25565
-    database: database
-    username: username
-    password: password
+  prefix: "&9[Workity]"
 
   # Limit of jobs each player.
   limit-jobs:
@@ -60,14 +53,14 @@ config:
 
   # Reward when you increase a level:
   rewards:
-    config:
-      # To enable the option.
-      enabled: false
+    # To enable the option.
+    enabled: false
 
-    # This path is a the level when you increase:
-    10:
-      # All formats: [ADD-MONEY] [BROADCAST] [COMMAND]
-      format:
-        - "[ADD-MONEY] 500"
-        - "[BROADCAST] &aThe player &a%player% won the level 10"
-        - "[COMMAND] give %player% diamond "
+    levels:
+      # This path is a the level when you increase:
+      10:
+        # All formats: [ADD-MONEY] [BROADCAST] [COMMAND]
+        actions:
+          - "[MONEY] 500"
+          - "[BROADCAST] &aThe player &a%player% won the level 10"
+          - "[COMMAND] give %player% diamond "
