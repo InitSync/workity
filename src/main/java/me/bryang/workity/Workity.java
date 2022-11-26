@@ -1,21 +1,23 @@
 package me.bryang.workity;
 
-import me.bryang.workity.utils.LogUtils;
-import org.bukkit.plugin.PluginDescriptionFile;
+import me.bryang.workity.plugin.Loader;
+import me.bryang.workity.plugin.services.LoaderService;
+import me.bryang.workity.plugin.utils.LogUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Workity
 extends JavaPlugin {
-	private final PluginDescriptionFile descriptionFile = getDescription();
+	public final String release = getDescription().getVersion();
 	
 	private static Workity instance;
 	
-	private PluginCore core;
+	private Loader core;
 	
-	public Workity() {
+	@Override
+	public void onLoad() {
 		instance = this;
 		
-		core = new PluginCore(this);
+		core = LoaderService.loader(this);
 	}
 	
 	public static Workity instance() {
@@ -26,12 +28,13 @@ extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
+		long startTime = System.currentTimeMillis();
 		core.enable();
 		
-		LogUtils.info(" Created by " + descriptionFile.getAuthors().get(0));
-		LogUtils.info(" You are using the version " + descriptionFile.getVersion() + ".");
-		LogUtils.info("Click to support: http://discord.devblook.team/");
-		
+		LogUtils.info(
+			"Created by InitSync. Enabled in " + (System.currentTimeMillis() - startTime) + "ms.",
+			"You are using the version " + release + "."
+		);
 	}
 	
 	@Override
