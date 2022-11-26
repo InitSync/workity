@@ -2,7 +2,6 @@
 # Message of the plugin
 
 jobs:
-
   # Help format.
   help:
     format:
@@ -19,7 +18,8 @@ jobs:
       - ""
       - "&c[Admin] &fList of admin arguments"
       - ""
-      - "&8- &f/jobs reload"
+      - "&8- &f/workity reload"
+      - "&8- &f/workity help"
       - "&8- &f/jobs add-level &c[player] [job] [level]"
       - "&8- &f/jobs set-level &c[player] [job] [level]"
       - "&8- &f/jobs remove-level &c[player] [job] [level]"
@@ -77,7 +77,7 @@ jobs:
       - "%action_stats% &8- &f%action_name% &8: &f%action_value%"
       - ""
       - "&a[Server] &8| &fYour job stats:"
-      - "%job_format% &8- &f%job_name% &8- &fNivel %level% &8: &f%xp%&8/&f%max_xp% "
+      - "%job_format% &8- &f%job_name% &8- &fNivel %level% &8: &f%exp%&8/&f%max_exp% "
 
     stats:
 
