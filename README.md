@@ -1,25 +1,24 @@
-[![CodeFactor](https://www.codefactor.io/repository/github/devblook/workity/badge)](https://www.codefactor.io/repository/github/devblook/workity)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/809ecb90a95a43918b3da8059ca873a7)](https://www.codacy.com/gh/InitSync/workity/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=InitSync/workity&amp;utm_campaign=Badge_Grade)
 
-# Workity
+**Workity** is a simple and easy to use plugin for creates multiple jobs and customize it for your Minecraft Server.
 
-A job plugin that allows you to customize your jobs in an optimized way.
+# ➕ | Contribute
+Do you want contribute with the library?
 
-### Features:
+* [Make a Pull Request](https://github.com/InitSync/workity/compare)
+* [Issues](https://github.com/InitSync/workity/issues/new)
 
-- Messages personalizables.
-- You can create jobs.
-- You can give rewards if a player go to a specific level.
-- You can multiply the money and xp.
+# ✅ | Build
+If you want build the project locally, download it, you must be had Gradle and Java 8+ for this.
 
-### Permissions:
+Now for build the project
+```
+git clone https://github.com/InitSync/workity
+cd workity
+./gradlew shadowJar
+```
 
-- jobs.admin: To have admin permissions.
+The file will be at ```bin/Workity-[release].jar```.
 
-### Default jobs:
-
-- Miner
-- Woodcutter
-- Hunter
-- Builder
-
-If you want support check [the server]( https://discord.devblook.team/)
+# 🎫 | License
+This project is licensed under the GNU General Public License v3.0 license, for more details see the file [License](LICENSE)
